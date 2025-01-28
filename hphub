@@ -1,0 +1,130 @@
+-- Global variables to control the tackle and kick features
+_G.tackle = false
+_G.kick = false
+
+-- Function to continuously tackle the ball
+function tackle()
+    while _G.tackle do
+        -- Face the ball
+        game:GetService("ReplicatedStorage").Events.faceBall:FireServer()
+        
+        -- Slide tackle the ball
+        local args = {
+            [1] = workspace.BallsInPlay.Ball, -- Target the ball
+            [2] = 1 -- Slide power or type
+        }
+        game:GetService("ReplicatedStorage").Events.Slide:FireServer(unpack(args))
+        
+        -- Wait before the next action
+        wait(0.1)
+    end
+end
+
+-- Function to continuously kick the ball
+function kick()
+    while _G.kick do
+        local args = {
+            [1] = workspace.BallsInPlay.Ball, -- Target the ball
+            [2] = 1, -- Kick power
+            [3] = true, -- Whether the kick is a pass
+            [4] = false -- Whether the kick is a shot
+        }
+        game:GetService("ReplicatedStorage").Events.Kick:FireServer(unpack(args))
+        
+        -- Wait before the next action
+        wait(0.1)
+    end
+end
+
+-- Load OrionLib
+local OrionLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/HProblox/ez/main/TeamSoccer3v3.lua"))()
+
+-- Display a notification using OrionLib
+OrionLib:MakeNotification({
+    Name = "Running HP Hub....",
+    Content = "Game: Team Soccer⚽(3v3)",
+    Image = "rbxassetid://4483345998",
+    Time = 5
+})
+
+-- Create the main window using OrionLib
+local Window = OrionLib:MakeWindow({
+    Name = "HP Hub - Team Soccer⚽(3v3)",
+    HidePremium = false,
+    SaveConfig = true,
+    ConfigFolder = "j",
+    IntroText = "HP Hub"
+})
+
+-- Create a tab in the window
+local Tab = Window:MakeTab({
+    Name = "HP_END",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+-- Add a section for OP features
+local s = Tab:AddSection({
+    Name = "====OP FEATURE===="
+})
+
+-- Add a toggle for the spam kick feature
+s:AddToggle({
+    Name = "Spam Kick Ball",
+    Default = false,
+    Callback = function(value)
+        _G.kick = value
+        if value then
+            kick()
+        end
+    end    
+})
+
+-- Add a toggle for the spam slide feature
+s:AddToggle({
+    Name = "Spam Slide",
+    Default = false,
+    Callback = function(value)
+        _G.tackle = value
+        if value then
+            tackle()
+        end
+    end    
+})
+
+-- Add a section for miscellaneous features
+local a = Tab:AddSection({
+    Name = "====MISC===="
+})
+
+-- Add buttons for various miscellaneous features
+a:AddButton({
+    Name = "Return To Lobby",
+    Callback = function()
+        game:GetService("ReplicatedStorage").Events.ReturnToLobby:FireServer()
+    end    
+})
+
+a:AddButton({
+    Name = "Change To The Red Team",
+    Callback = function()
+        local args = { [1] = "Red" }
+        game:GetService("ReplicatedStorage").Events.requestTeamChange:FireServer(unpack(args))
+    end    
+})
+
+a:AddButton({
+    Name = "Change To The Blue Team",
+    Callback = function()
+        local args = { [1] = "Blue" }
+        game:GetService("ReplicatedStorage").Events.requestTeamChange:FireServer(unpack(args))
+    end    
+})
+
+a:AddButton({
+    Name = "Change To The White Team",
+    Callback = function()
+        local args = { [1] = "White" }
+        game:GetService("ReplicatedStorage").Events.requestTeamChange:FireServer(unpack(args))
+    end    
+})
