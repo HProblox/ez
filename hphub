@@ -1,130 +1,155 @@
--- Global variables to control the tackle and kick features
+-- Open Source Script
+-- By Liebert
+-- Credit me
+
 _G.tackle = false
 _G.kick = false
 
--- Function to continuously tackle the ball
+-- Function: Auto Tackle
 function tackle()
     while _G.tackle do
-        -- Face the ball
         game:GetService("ReplicatedStorage").Events.faceBall:FireServer()
-        
-        -- Slide tackle the ball
         local args = {
             [1] = workspace.BallsInPlay.Ball, -- Target the ball
-            [2] = 1 -- Slide power or type
+            [2] = 1 -- Slide type/power
         }
         game:GetService("ReplicatedStorage").Events.Slide:FireServer(unpack(args))
-        
-        -- Wait before the next action
-        wait(0.1)
+        wait(0.1) -- Prevents lag by reducing execution speed
     end
 end
 
--- Function to continuously kick the ball
+-- Function: Auto Kick
 function kick()
     while _G.kick do
         local args = {
             [1] = workspace.BallsInPlay.Ball, -- Target the ball
             [2] = 1, -- Kick power
-            [3] = true, -- Whether the kick is a pass
-            [4] = false -- Whether the kick is a shot
+            [3] = true, -- Pass type
+            [4] = false -- Shot type
         }
         game:GetService("ReplicatedStorage").Events.Kick:FireServer(unpack(args))
-        
-        -- Wait before the next action
-        wait(0.1)
+        wait(0.1) -- Prevents lag by reducing execution speed
     end
 end
 
 -- Load OrionLib
-local OrionLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/HProblox/ez/main/TeamSoccer3v3.lua"))()
+local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/thanhdat4461/OrionMoblie/main/source')))()
 
--- Display a notification using OrionLib
+-- Notification
 OrionLib:MakeNotification({
     Name = "Running HP Hub....",
     Content = "Game: Team Soccer⚽(3v3)",
-    Image = "rbxassetid://4483345998",
+    Image = "rbxassetid://90152957470638",
     Time = 5
 })
 
--- Create the main window using OrionLib
+-- Create Main Window
 local Window = OrionLib:MakeWindow({
     Name = "HP Hub - Team Soccer⚽(3v3)",
     HidePremium = false,
     SaveConfig = true,
-    ConfigFolder = "j",
+    ConfigFolder = "SoccerProConfig",
     IntroText = "HP Hub"
 })
 
--- Create a tab in the window
+-- Main Tab
 local Tab = Window:MakeTab({
-    Name = "HP_END",
-    Icon = "rbxassetid://4483345998",
+    Name = "Main Features",
+    Icon = "rbxassetid://90152957470638",
     PremiumOnly = false
 })
 
--- Add a section for OP features
-local s = Tab:AddSection({
-    Name = "====OP FEATURE===="
-})
+-- OP Features Section
+local s = Tab:AddSection({ Name = "==== OP FEATURES ====" })
 
--- Add a toggle for the spam kick feature
+-- Toggle: Auto Kick
 s:AddToggle({
     Name = "Spam Kick Ball",
     Default = false,
     Callback = function(value)
         _G.kick = value
-        if value then
-            kick()
-        end
-    end    
+        if value then kick() end
+    end
 })
 
--- Add a toggle for the spam slide feature
+-- Toggle: Auto Slide
 s:AddToggle({
     Name = "Spam Slide",
     Default = false,
     Callback = function(value)
         _G.tackle = value
-        if value then
-            tackle()
-        end
-    end    
+        if value then tackle() end
+    end
 })
 
--- Add a section for miscellaneous features
-local a = Tab:AddSection({
-    Name = "====MISC===="
+-- Miscellaneous Section
+local a = Tab:AddSection({ Name = "==== MISC ====" })
+
+-- Claim Rewards
+a:AddButton({
+    Name = "Claim Normal Case",
+    Callback = function()
+        game:GetService("ReplicatedStorage").EventsTimeRewards.ClaimReward:FireServer(1)
+    end
 })
 
--- Add buttons for various miscellaneous features
+a:AddButton({
+    Name = "Claim 1000 Coins",
+    Callback = function()
+        game:GetService("ReplicatedStorage").EventsTimeRewards.ClaimReward:FireServer(2)
+    end
+})
+
+a:AddButton({
+    Name = "Claim Ultra Case",
+    Callback = function()
+        game:GetService("ReplicatedStorage").EventsTimeRewards.ClaimReward:FireServer(3)
+    end
+})
+
+a:AddButton({
+    Name = "Claim Zombie Doge Ball",
+    Callback = function()
+        game:GetService("ReplicatedStorage").EventsTimeRewards.ClaimReward:FireServer(4)
+    end
+})
+
+-- Return to Lobby
 a:AddButton({
     Name = "Return To Lobby",
     Callback = function()
         game:GetService("ReplicatedStorage").Events.ReturnToLobby:FireServer()
-    end    
+    end
 })
 
+-- Change Teams
 a:AddButton({
     Name = "Change To The Red Team",
     Callback = function()
-        local args = { [1] = "Red" }
-        game:GetService("ReplicatedStorage").Events.requestTeamChange:FireServer(unpack(args))
-    end    
+        game:GetService("ReplicatedStorage").Events.requestTeamChange:FireServer("Red")
+    end
 })
 
 a:AddButton({
     Name = "Change To The Blue Team",
     Callback = function()
-        local args = { [1] = "Blue" }
-        game:GetService("ReplicatedStorage").Events.requestTeamChange:FireServer(unpack(args))
-    end    
+        game:GetService("ReplicatedStorage").Events.requestTeamChange:FireServer("Blue")
+    end
 })
 
-a:AddButton({
-    Name = "Change To The White Team",
+-- Utility Section
+local utilitySection = Tab:AddSection({ Name = "==== UTILITY ====" })
+
+-- Teleport to Ball
+utilitySection:AddButton({
+    Name = "Teleport to Ball",
     Callback = function()
-        local args = { [1] = "White" }
-        game:GetService("ReplicatedStorage").Events.requestTeamChange:FireServer(unpack(args))
-    end    
+        local ball = workspace.BallsInPlay.Ball
+        if ball then
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = ball.CFrame
+        end
+    end
 })
+
+-- Initialize UI
+OrionLib:Init()
