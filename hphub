@@ -1,37 +1,3 @@
--- Open Source Script
--- By Liebert
--- Credit me
-
-_G.tackle = false
-_G.kick = false
-
--- Function: Auto Tackle
-function tackle()
-    while _G.tackle do
-        game:GetService("ReplicatedStorage").Events.faceBall:FireServer()
-        local args = {
-            [1] = workspace.BallsInPlay.Ball, -- Target the ball
-            [2] = 1 -- Slide type/power
-        }
-        game:GetService("ReplicatedStorage").Events.Slide:FireServer(unpack(args))
-        wait(0.1) -- Prevents lag by reducing execution speed
-    end
-end
-
--- Function: Auto Kick
-function kick()
-    while _G.kick do
-        local args = {
-            [1] = workspace.BallsInPlay.Ball, -- Target the ball
-            [2] = 1, -- Kick power
-            [3] = true, -- Pass type
-            [4] = false -- Shot type
-        }
-        game:GetService("ReplicatedStorage").Events.Kick:FireServer(unpack(args))
-        wait(0.1) -- Prevents lag by reducing execution speed
-    end
-end
-
 -- Load OrionLib
 local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/thanhdat4461/OrionMoblie/main/source')))()
 
@@ -39,7 +5,7 @@ local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/tha
 OrionLib:MakeNotification({
     Name = "Running HP Hub....",
     Content = "Game: Team Soccer⚽(3v3)",
-    Image = "rbxassetid://90152957470638",
+    Image = "rbxassetid://79118498874945",
     Time = 5
 })
 
@@ -54,8 +20,8 @@ local Window = OrionLib:MakeWindow({
 
 -- Main Tab
 local Tab = Window:MakeTab({
-    Name = "Main Features",
-    Icon = "rbxassetid://90152957470638",
+    Name = "H_P",
+    Icon = "rbxassetid://79118498874945",
     PremiumOnly = false
 })
 
@@ -79,61 +45,6 @@ s:AddToggle({
     Callback = function(value)
         _G.tackle = value
         if value then tackle() end
-    end
-})
-
--- Miscellaneous Section
-local a = Tab:AddSection({ Name = "==== MISC ====" })
-
--- Claim Rewards
-a:AddButton({
-    Name = "Claim Normal Case",
-    Callback = function()
-        game:GetService("ReplicatedStorage").EventsTimeRewards.ClaimReward:FireServer(1)
-    end
-})
-
-a:AddButton({
-    Name = "Claim 1000 Coins",
-    Callback = function()
-        game:GetService("ReplicatedStorage").EventsTimeRewards.ClaimReward:FireServer(2)
-    end
-})
-
-a:AddButton({
-    Name = "Claim Ultra Case",
-    Callback = function()
-        game:GetService("ReplicatedStorage").EventsTimeRewards.ClaimReward:FireServer(3)
-    end
-})
-
-a:AddButton({
-    Name = "Claim Zombie Doge Ball",
-    Callback = function()
-        game:GetService("ReplicatedStorage").EventsTimeRewards.ClaimReward:FireServer(4)
-    end
-})
-
--- Return to Lobby
-a:AddButton({
-    Name = "Return To Lobby",
-    Callback = function()
-        game:GetService("ReplicatedStorage").Events.ReturnToLobby:FireServer()
-    end
-})
-
--- Change Teams
-a:AddButton({
-    Name = "Change To The Red Team",
-    Callback = function()
-        game:GetService("ReplicatedStorage").Events.requestTeamChange:FireServer("Red")
-    end
-})
-
-a:AddButton({
-    Name = "Change To The Blue Team",
-    Callback = function()
-        game:GetService("ReplicatedStorage").Events.requestTeamChange:FireServer("Blue")
     end
 })
 
